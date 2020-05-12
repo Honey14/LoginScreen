@@ -1,3 +1,7 @@
 package `in`.obvious.android.starter.login
 
-class LoginEvent
+sealed class LoginEvent
+
+data class UsernameChanged(val username: String) : LoginEvent()
+
+data class PasswordChanged(val password: String) : LoginEvent()
