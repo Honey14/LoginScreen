@@ -1,3 +1,5 @@
 package `in`.obvious.android.starter.login
 
-class LoginEffect
+sealed class LoginEffect
+
+data class ValidateInput(val username : String, val password : String) : LoginEffect()

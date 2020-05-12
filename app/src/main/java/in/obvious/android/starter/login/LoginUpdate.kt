@@ -1,7 +1,7 @@
 package `in`.obvious.android.starter.login
 
 import com.spotify.mobius.Next
-import com.spotify.mobius.Next.next
+import com.spotify.mobius.Next.*
 import com.spotify.mobius.Update
 
 class LoginUpdate : Update<LoginModel, LoginEvent, LoginEffect> {
@@ -13,6 +13,7 @@ class LoginUpdate : Update<LoginModel, LoginEvent, LoginEffect> {
         return when (event) {
             is UsernameChanged -> next(model.usernameChanged(event.username))
             is PasswordChanged -> next(model.passwordChanged(event.password))
+            is SubmitClicked -> dispatch(setOf(ValidateInput(model.username,model.password)))
         }
     }
 }

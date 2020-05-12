@@ -1,6 +1,8 @@
 package `in`.obvious.android.starter.login
 
+import com.spotify.mobius.test.NextMatchers
 import com.spotify.mobius.test.NextMatchers.hasModel
+import com.spotify.mobius.test.NextMatchers.hasNoModel
 import com.spotify.mobius.test.UpdateSpec
 import com.spotify.mobius.test.UpdateSpec.assertThatNext
 import org.junit.Test
@@ -32,8 +34,26 @@ class LoginUpdateTest {
         spec
             .given(defaultModel)
             .whenEvent(PasswordChanged(password))
-            .then(assertThatNext(
-                hasModel(defaultModel.passwordChanged(password))
-            ))
+            .then(
+                assertThatNext(
+                    hasModel(defaultModel.passwordChanged(password))
+                )
+            )
     }
+
+    @Test
+    fun `when the submit button is clicked, validate the input`() {
+
+        val validateModel = defaultModel.usernameChanged("honey").passwordChanged(password = "password12")
+        spec
+            .given(validateModel)
+            .whenEvent(SubmitClicked())
+            .then(
+                assertThatNext(
+                    hasNoModel(),
+                    NextMatchers.hasEffects(ValidateInput("honey","password12") as LoginEffect)
+                )
+            )
+    }
+
 }
