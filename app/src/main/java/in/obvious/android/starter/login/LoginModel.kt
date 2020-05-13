@@ -21,4 +21,8 @@ data class LoginModel(
     fun passwordChanged(password: String): LoginModel {
         return copy(password = password)
     }
+
+    fun validationFailed(errors: Set<InputValidationError>): LoginModel {
+        return copy(validationErrors = errors)
+    }
 }

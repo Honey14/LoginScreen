@@ -14,6 +14,7 @@ class LoginUpdate : Update<LoginModel, LoginEvent, LoginEffect> {
             is UsernameChanged -> next(model.usernameChanged(event.username))
             is PasswordChanged -> next(model.passwordChanged(event.password))
             is SubmitClicked -> dispatch(setOf(ValidateInput(model.username,model.password)))
+            is ValidationFailed -> next(model.validationFailed(event.errors))
         }
     }
 }
