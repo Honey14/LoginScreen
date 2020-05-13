@@ -11,3 +11,6 @@ class SubmitClicked : LoginEvent()
 data class ValidationFailed(val errors: Set<InputValidationError>) : LoginEvent()
 
 class ValidationSucceeded : LoginEvent()
+
+data class IncorrectCredentialsEntered(val error: String) : LoginEvent()
+

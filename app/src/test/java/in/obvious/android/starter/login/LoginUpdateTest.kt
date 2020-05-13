@@ -2,7 +2,6 @@ package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.login.InputValidationError.PasswordBlank
 import `in`.obvious.android.starter.login.InputValidationError.UsernameBlank
-import com.spotify.mobius.test.NextMatchers
 import com.spotify.mobius.test.NextMatchers.*
 import com.spotify.mobius.test.UpdateSpec
 import com.spotify.mobius.test.UpdateSpec.assertThatNext
@@ -69,14 +68,16 @@ class LoginUpdateTest {
         spec
             .given(model)
             .whenEvent(ValidationFailed(errors))
-            .then(assertThatNext(
-                hasModel(model.validationFailed(errors)),
-                hasNoEffects()
-            ))
+            .then(
+                assertThatNext(
+                    hasModel(model.validationFailed(errors)),
+                    hasNoEffects()
+                )
+            )
     }
 
     @Test
-    fun `whenever the validation succeeded, then user must be logged in`(){
+    fun `whenever the validation succeeded, then user should be logged in`() {
         val model = defaultModel
             .usernameChanged("name")
             .passwordChanged("1234")
@@ -86,7 +87,24 @@ class LoginUpdateTest {
             .then(
                 assertThatNext(
                     hasModel(model.loggingIn()),
-                    hasEffects(LogIn("name","1234") as LoginEffect)
+                    hasEffects(LogIn("name", "1234") as LoginEffect)
+                )
+            )
+    }
+
+    @Test
+    fun `when incorrect credentials entered, error must be displayed`() {
+        val model = defaultModel
+            .usernameChanged("honey")
+            .passwordChanged("1234")
+        val error = "Incorrect credentials, please try again!"
+        spec
+            .given(model)
+            .whenEvent(IncorrectCredentialsEntered(error))
+            .then(
+                assertThatNext(
+                    hasModel(model.incorrectCredentials(error)),
+                    hasNoEffects()
                 )
             )
     }
