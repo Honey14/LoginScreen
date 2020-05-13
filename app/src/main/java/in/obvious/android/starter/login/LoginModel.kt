@@ -2,11 +2,16 @@ package `in`.obvious.android.starter.login
 
 data class LoginModel(
     val username: String,
-    val password: String
+    val password: String,
+    val validationErrors: Set<InputValidationError>
 ) {
 
     companion object {
-        fun create(): LoginModel = LoginModel(username = "", password = "")
+        fun create(): LoginModel = LoginModel(
+            username = "",
+            password = "",
+            validationErrors = emptySet()
+        )
     }
 
     fun usernameChanged(username: String): LoginModel {
