@@ -6,14 +6,16 @@ import `in`.obvious.android.starter.login.InputValidationError.UsernameBlank
 data class LoginModel(
     val username: String,
     val password: String,
-    val validationErrors: Set<InputValidationError>
+    val validationErrors: Set<InputValidationError>,
+    val isLoggingIn : Boolean
 ) {
 
     companion object {
         fun create(): LoginModel = LoginModel(
             username = "",
             password = "",
-            validationErrors = emptySet()
+            validationErrors = emptySet(),
+            isLoggingIn = false
         )
     }
 
@@ -34,4 +36,10 @@ data class LoginModel(
     fun validationFailed(errors: Set<InputValidationError>): LoginModel {
         return copy(validationErrors = errors)
     }
+
+    fun loggingIn(): LoginModel {
+        return copy(isLoggingIn = true)
+    }
+
+
 }

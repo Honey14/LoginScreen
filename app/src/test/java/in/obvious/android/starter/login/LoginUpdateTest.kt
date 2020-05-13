@@ -74,4 +74,20 @@ class LoginUpdateTest {
                 hasNoEffects()
             ))
     }
+
+    @Test
+    fun `whenever the validation succeeded, then user must be logged in`(){
+        val model = defaultModel
+            .usernameChanged("name")
+            .passwordChanged("1234")
+        spec
+            .given(model)
+            .whenEvent(ValidationSucceeded())
+            .then(
+                assertThatNext(
+                    hasModel(model.loggingIn()),
+                    hasEffects(LogIn("name","1234") as LoginEffect)
+                )
+            )
+    }
 }
