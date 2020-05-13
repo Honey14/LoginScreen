@@ -16,4 +16,4 @@ data class IncorrectCredentialsEntered(val error: String) : LoginEvent()
 
 data class RequestFailedWithNetworkError(val error: String) : LoginEvent()
 
-
+class LoginSucceeded : LoginEvent()

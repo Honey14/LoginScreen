@@ -116,5 +116,16 @@ class LoginUpdateTest {
             )
     }
 
-
+    @Test
+    fun `when login succeeded, then save the user`(){
+        spec
+            .given(model)
+            .whenEvent(LoginSucceeded())
+            .then(
+                assertThatNext(
+                    hasNoModel(),
+                    hasEffects(SaveUser("honey") as LoginEffect)
+                )
+            )
+    }
 }
