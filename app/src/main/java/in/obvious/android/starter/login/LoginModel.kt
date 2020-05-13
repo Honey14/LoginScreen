@@ -8,7 +8,8 @@ data class LoginModel(
     val password: String,
     val validationErrors: Set<InputValidationError>,
     val isLoggingIn: Boolean,
-    val incorrectCredentialsError: String
+    val incorrectCredentialsError: String,
+    val networkFailure: String
 ) {
 
     companion object {
@@ -17,7 +18,8 @@ data class LoginModel(
             password = "",
             validationErrors = emptySet(),
             isLoggingIn = false,
-            incorrectCredentialsError = ""
+            incorrectCredentialsError = "",
+            networkFailure = ""
         )
     }
 
@@ -46,5 +48,11 @@ data class LoginModel(
     fun incorrectCredentials(error: String): LoginModel {
         return copy(incorrectCredentialsError = error)
     }
+
+    fun requestFailed(error: String): LoginModel {
+        return copy(networkFailure = error)
+    }
+
+
 
 }

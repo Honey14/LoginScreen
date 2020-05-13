@@ -13,6 +13,10 @@ class LoginUpdateTest {
 
     private val defaultModel = LoginModel.create()
 
+    private val model = defaultModel
+        .usernameChanged("honey")
+        .passwordChanged("1234")
+
     @Test
     fun `when the user changes the username, the UI should be updated`() {
         val username = "vinay"
@@ -43,17 +47,13 @@ class LoginUpdateTest {
 
     @Test
     fun `when the submit button is clicked, validate the input`() {
-        val validateModel = defaultModel
-            .usernameChanged("honey")
-            .passwordChanged(password = "password12")
-
         spec
-            .given(validateModel)
+            .given(model)
             .whenEvent(SubmitClicked())
             .then(
                 assertThatNext(
                     hasNoModel(),
-                    hasEffects(ValidateInput("honey", "password12") as LoginEffect)
+                    hasEffects(ValidateInput("honey", "1234") as LoginEffect)
                 )
             )
     }
@@ -78,25 +78,19 @@ class LoginUpdateTest {
 
     @Test
     fun `whenever the validation succeeded, then user should be logged in`() {
-        val model = defaultModel
-            .usernameChanged("name")
-            .passwordChanged("1234")
         spec
             .given(model)
             .whenEvent(ValidationSucceeded())
             .then(
                 assertThatNext(
                     hasModel(model.loggingIn()),
-                    hasEffects(LogIn("name", "1234") as LoginEffect)
+                    hasEffects(LogIn("honey", "1234") as LoginEffect)
                 )
             )
     }
 
     @Test
     fun `when incorrect credentials entered, error must be displayed`() {
-        val model = defaultModel
-            .usernameChanged("honey")
-            .passwordChanged("1234")
         val error = "Incorrect credentials, please try again!"
         spec
             .given(model)
@@ -108,4 +102,19 @@ class LoginUpdateTest {
                 )
             )
     }
+
+    @Test
+    fun `when request failed with network error, then error must be displayed `() {
+        val error = "Request failed, please try again!"
+        spec
+            .given(model)
+            .whenEvent(RequestFailedWithNetworkError(error))
+            .then(
+                assertThatNext(
+                    hasModel(model.requestFailed(error))
+                )
+            )
+    }
+
+
 }

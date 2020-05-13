@@ -20,6 +20,7 @@ class LoginUpdate : Update<LoginModel, LoginEvent, LoginEffect> {
                 setOf(LogIn(model.username, model.password))
             )
             is IncorrectCredentialsEntered -> next(model.incorrectCredentials(event.error))
+            is RequestFailedWithNetworkError -> next(model.requestFailed(event.error))
         }
     }
 }
