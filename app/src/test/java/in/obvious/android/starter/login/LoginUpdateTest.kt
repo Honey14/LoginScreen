@@ -97,7 +97,7 @@ class LoginUpdateTest {
             .whenEvent(IncorrectCredentialsEntered(error))
             .then(
                 assertThatNext(
-                    hasModel(model.incorrectCredentials(error)),
+                    hasModel(model.incorrectCredentials()),
                     hasNoEffects()
                 )
             )
@@ -111,7 +111,7 @@ class LoginUpdateTest {
             .whenEvent(RequestFailedWithNetworkError(error))
             .then(
                 assertThatNext(
-                    hasModel(model.requestFailed(error))
+                    hasModel(model.requestFailed())
                 )
             )
     }
@@ -125,6 +125,19 @@ class LoginUpdateTest {
                 assertThatNext(
                     hasNoModel(),
                     hasEffects(SaveUser("honey") as LoginEffect)
+                )
+            )
+    }
+
+    @Test
+    fun `when user saved, then go to home screen`(){ // not sure why do we need to test this flow
+        spec
+            .given(model)
+            .whenEvent(UserSaved())
+            .then(
+                assertThatNext(
+                    hasNoModel(),
+                    hasEffects(GoHome() as LoginEffect)
                 )
             )
     }
