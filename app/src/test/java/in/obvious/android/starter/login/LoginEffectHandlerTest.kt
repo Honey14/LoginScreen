@@ -1,17 +1,19 @@
 package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.login.InputValidationError.*
+import `in`.obvious.android.starter.login.http.FakeLoginApiService
 import com.google.common.truth.Truth.*
 import com.spotify.mobius.functions.Consumer
 import com.spotify.mobius.test.RecordingConsumer
 import org.junit.Test
+import java.net.SocketTimeoutException
 
 class LoginEffectHandlerTest {
 
     @Test
     fun `when the validate input effect is received, validate the username input without recording consumer`() {
         // given
-        val effectHandler = LoginEffectHandler()
+        val effectHandler = LoginEffectHandler(FakeLoginApiService())
 
         val receivedEvents = mutableListOf<LoginEvent>()
 
@@ -33,7 +35,7 @@ class LoginEffectHandlerTest {
     @Test
     fun `when the validate input effect is received, validate the entered username`() {
         // given
-        val effectHandler = LoginEffectHandler()
+        val effectHandler = LoginEffectHandler(FakeLoginApiService())
 
         val receivedEvents = RecordingConsumer<LoginEvent>()
         val connection = effectHandler.connect(receivedEvents)
@@ -50,7 +52,7 @@ class LoginEffectHandlerTest {
     @Test
     fun `when the validate input effect is received, validate the entered password`() {
         // given
-        val effectHandler = LoginEffectHandler()
+        val effectHandler = LoginEffectHandler(FakeLoginApiService())
 
         val receivedEvents = RecordingConsumer<LoginEvent>()
         val connection = effectHandler.connect(receivedEvents)
@@ -67,7 +69,7 @@ class LoginEffectHandlerTest {
     @Test
     fun `when the validate input effect is received, validate the entered username and password are not blank`() {
         // given
-        val effectHandler = LoginEffectHandler()
+        val effectHandler = LoginEffectHandler(FakeLoginApiService())
 
         val receivedEvents = RecordingConsumer<LoginEvent>()
         val connection = effectHandler.connect(receivedEvents)
@@ -84,7 +86,7 @@ class LoginEffectHandlerTest {
     @Test
     fun `when the validate input effect is received, validate the entered username and password`() {
         // given
-        val effectHandler = LoginEffectHandler()
+        val effectHandler = LoginEffectHandler(FakeLoginApiService())
 
         val receivedEvents = RecordingConsumer<LoginEvent>()
         val connection = effectHandler.connect(receivedEvents)
@@ -95,5 +97,22 @@ class LoginEffectHandlerTest {
 
         // then
         receivedEvents.assertValues(ValidationSucceeded)
+    }
+
+    @Test
+    fun `when the login effect is received, emit the network failed event if the login call fails`() {
+        // given
+        val service = FakeLoginApiService(otherException = SocketTimeoutException())
+
+        val effectHandler = LoginEffectHandler(loginApiService = service)
+        val receivedEvents = RecordingConsumer<LoginEvent>()
+        val connection = effectHandler.connect(receivedEvents)
+
+        // when
+        val effect = LogIn(username = "vinay", password = "123")
+        connection.accept(effect)
+
+        // then
+        receivedEvents.assertValues(RequestFailedWithNetworkError("") as LoginEvent)
     }
 }

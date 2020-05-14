@@ -2,11 +2,14 @@ package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.login.InputValidationError.PasswordBlank
 import `in`.obvious.android.starter.login.InputValidationError.UsernameBlank
+import `in`.obvious.android.starter.login.http.LoginApiService
 import com.spotify.mobius.Connectable
 import com.spotify.mobius.Connection
 import com.spotify.mobius.functions.Consumer
 
-class LoginEffectHandler : Connectable<LoginEffect, LoginEvent> {
+class LoginEffectHandler(
+    private val loginApiService: LoginApiService
+) : Connectable<LoginEffect, LoginEvent> {
 
     override fun connect(
         events: Consumer<LoginEvent>
