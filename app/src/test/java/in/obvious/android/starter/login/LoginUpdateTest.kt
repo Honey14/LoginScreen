@@ -137,7 +137,7 @@ class LoginUpdateTest {
             .then(
                 assertThatNext(
                     hasNoModel(),
-                    hasEffects(GoHome() as LoginEffect)
+                    hasEffects(GoHome as LoginEffect)
                 )
             )
     }

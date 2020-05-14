@@ -22,7 +22,7 @@ class LoginUpdate : Update<LoginModel, LoginEvent, LoginEffect> {
             is IncorrectCredentialsEntered -> next(model.incorrectCredentials())
             is RequestFailedWithNetworkError -> next(model.requestFailed())
             is LoginSucceeded -> dispatch(setOf(SaveUser(model.username))) // not sure why setOf is a compulsion when only username is needed and not a set
-            is UserSaved -> dispatch(setOf(GoHome())) // ERROR : will not work without a collection of set
+            is UserSaved -> dispatch(setOf(GoHome)) // ERROR : will not work without a collection of set Solution: create singleton instead
         }
     }
 }

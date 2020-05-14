@@ -8,4 +8,4 @@ data class LogIn(val username: String, val password: String) : LoginEffect()
 
 data class SaveUser(val username: String) : LoginEffect()
 
-class GoHome() : LoginEffect()
+object GoHome : LoginEffect()
