@@ -80,7 +80,7 @@ class LoginUpdateTest {
     fun `whenever the validation succeeded, then user should be logged in`() {
         spec
             .given(model)
-            .whenEvent(ValidationSucceeded())
+            .whenEvent(ValidationSucceeded)
             .then(
                 assertThatNext(
                     hasModel(model.loggingIn()),
