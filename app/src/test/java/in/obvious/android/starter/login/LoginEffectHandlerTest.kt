@@ -2,6 +2,8 @@ package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.login.InputValidationError.*
 import `in`.obvious.android.starter.login.http.FakeLoginApiService
+import `in`.obvious.android.starter.login.http.HttpException
+import `in`.obvious.android.starter.login.http.LoginResponse
 import com.google.common.truth.Truth.*
 import com.spotify.mobius.functions.Consumer
 import com.spotify.mobius.test.RecordingConsumer
@@ -113,6 +115,54 @@ class LoginEffectHandlerTest {
         connection.accept(effect)
 
         // then
-        receivedEvents.assertValues(RequestFailedWithNetworkError("") as LoginEvent)
+        receivedEvents.assertValues(RequestFailedWithNetworkError as LoginEvent)
     }
+
+    @Test
+    fun `when the login effect is received, emit the incorrect credentials event if the login call fails`() {
+        // given
+        val service = FakeLoginApiService(httpException = HttpException(400, "Bad Request"))
+        val effectHandler = LoginEffectHandler(loginApiService = service)
+        val receivedEvents = RecordingConsumer<LoginEvent>()
+        val connection = effectHandler.connect(receivedEvents)
+
+        // when
+        val effect = LogIn(username = "vinay", password = "123")
+        connection.accept(effect)
+
+        // then
+        receivedEvents.assertValues(IncorrectCredentialsEntered as LoginEvent)
+    }
+
+    @Test
+    fun `when the login effect is received, emit the validation successful event if the login call succeeds`() {
+        // given
+        val service = FakeLoginApiService(response = LoginResponse("546tyt74584yty95649yht"))
+        val effectHandler = LoginEffectHandler(loginApiService = service)
+        val receivedEvents = RecordingConsumer<LoginEvent>()
+        val connection = effectHandler.connect(receivedEvents)
+
+        // when
+        val effect = LogIn(username = "vinay", password = "123")
+        connection.accept(effect)
+
+        // then
+        receivedEvents.assertValues(LoginSucceeded as LoginEvent)
+    }
+
+    @Test
+    fun `when the Save User effect is received, save the user in database`() {
+
+        val effectHandler = LoginEffectHandler(FakeLoginApiService())
+        val receivedEvents = RecordingConsumer<LoginEvent>()
+        val connection = effectHandler.connect(receivedEvents)
+
+        //when
+        val effect = SaveUser(username = "vinay")
+        connection.accept(effect)
+
+        //then
+        receivedEvents.assertValues(UserSaved)
+    }
+
 }
