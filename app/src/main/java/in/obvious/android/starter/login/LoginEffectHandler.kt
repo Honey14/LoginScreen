@@ -2,6 +2,8 @@ package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.login.InputValidationError.PasswordBlank
 import `in`.obvious.android.starter.login.InputValidationError.UsernameBlank
+import `in`.obvious.android.starter.login.database.SavingUser
+import `in`.obvious.android.starter.login.database.UserDaoFake
 import `in`.obvious.android.starter.login.http.HttpException
 import `in`.obvious.android.starter.login.http.LoginApiService
 import com.spotify.mobius.Connectable
@@ -11,8 +13,9 @@ import java.io.IOException
 
 
 class LoginEffectHandler(
-    private val loginApiService: LoginApiService
-
+    private val loginApiService: LoginApiService,
+    private val userDaoFake: UserDaoFake? = null,
+    private val uiActions: UiActions? = null
 ) : Connectable<LoginEffect, LoginEvent> {
     override fun connect(
         events: Consumer<LoginEvent>
@@ -23,7 +26,8 @@ class LoginEffectHandler(
                 when (effect) {
                     is ValidateInput -> validateInput(effect, events)
                     is LogIn -> loginAPI(effect, events)
-//                    is SaveUser -> saveUsername(effect, events)
+                    is SaveUser -> saveUsername(effect, events)
+                    is GoHome -> uiActions?.navigateToHomeScreen()
                 }
             }
 
@@ -33,13 +37,13 @@ class LoginEffectHandler(
         }
     }
 
-//    private fun saveUsername(effect: SaveUser, events: Consumer<LoginEvent>) {
+    private fun saveUsername(effect: SaveUser, events: Consumer<LoginEvent>) {
+        val username = effect.username
 
-//        val username = effect.username
+        userDaoFake?.insertUser(SavingUser(0, username = username, authToken = effect.authToken))
 
-//        userDaoFake.insertUser(SavingUser(0,username = username, authToken = effect.authToken))
-
-//    }
+        events.accept(UserSaved)
+    }
 
     private fun loginAPI(effect: LogIn, events: Consumer<LoginEvent>) {
         val username = effect.username

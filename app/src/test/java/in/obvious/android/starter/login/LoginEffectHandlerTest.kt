@@ -1,6 +1,8 @@
 package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.login.InputValidationError.*
+import `in`.obvious.android.starter.login.database.SavingUser
+import `in`.obvious.android.starter.login.database.UserDaoFake
 import `in`.obvious.android.starter.login.http.FakeLoginApiService
 import `in`.obvious.android.starter.login.http.HttpException
 import `in`.obvious.android.starter.login.http.LoginResponse
@@ -152,17 +154,23 @@ class LoginEffectHandlerTest {
 
     @Test
     fun `when the Save User effect is received, save the user in database`() {
+        val effectHandler = LoginEffectHandler(FakeLoginApiService(), object : UserDaoFake {
+            override fun insertUser(user: SavingUser) {
 
-        val effectHandler = LoginEffectHandler(FakeLoginApiService())
+            }
+        })
+
         val receivedEvents = RecordingConsumer<LoginEvent>()
         val connection = effectHandler.connect(receivedEvents)
 
         //when
-        val effect = SaveUser(username = "vinay")
+        val effect = SaveUser(username = "vinay",authToken = "ty67ty65756y")
         connection.accept(effect)
 
         //then
         receivedEvents.assertValues(UserSaved)
     }
+
+
 
 }

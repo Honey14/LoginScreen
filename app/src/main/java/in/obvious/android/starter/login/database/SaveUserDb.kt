@@ -36,12 +36,17 @@ abstract class SaveUserDb : RoomDatabase() {
 @Entity(tableName = "note_table")
 data class SavingUser(
     @PrimaryKey(autoGenerate = true) var id: Int,
-    val username: String
+    val username: String,
+    val authToken:String
 )
 
 
 @Dao
 interface UserDao {
     @Insert
+    fun insertUser(user: SavingUser)
+}
+
+interface UserDaoFake {
     fun insertUser(user: SavingUser)
 }

@@ -6,6 +6,6 @@ data class ValidateInput(val username : String, val password : String) : LoginEf
 
 data class LogIn(val username: String, val password: String) : LoginEffect()
 
-data class SaveUser(val username: String) : LoginEffect()
+data class SaveUser(val username: String,val authToken: String) : LoginEffect()
 
 object GoHome : LoginEffect()

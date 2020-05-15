@@ -21,7 +21,7 @@ class LoginUpdate : Update<LoginModel, LoginEvent, LoginEffect> {
             )
             is IncorrectCredentialsEntered -> next(model.incorrectCredentials())
             is RequestFailedWithNetworkError -> next(model.requestFailed())
-            is LoginSucceeded -> dispatch(setOf(SaveUser(model.username)))
+            is LoginSucceeded -> dispatch(setOf(SaveUser(model.username,"tr2yt2uyt6y2rrt2")))
             is UserSaved -> dispatch(setOf(GoHome))
         }
     }

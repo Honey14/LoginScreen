@@ -122,7 +122,7 @@ class LoginUpdateTest {
             .then(
                 assertThatNext(
                     hasNoModel(),
-                    hasEffects(SaveUser("honey") as LoginEffect)
+                    hasEffects(SaveUser("honey","65yt65yt56") as LoginEffect)
                 )
             )
     }
