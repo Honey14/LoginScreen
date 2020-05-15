@@ -91,10 +91,9 @@ class LoginUpdateTest {
 
     @Test
     fun `when incorrect credentials entered, error must be displayed`() {
-        val error = "Incorrect credentials, please try again!"
         spec
             .given(model)
-            .whenEvent(IncorrectCredentialsEntered(error))
+            .whenEvent(IncorrectCredentialsEntered)
             .then(
                 assertThatNext(
                     hasModel(model.incorrectCredentials()),
@@ -105,10 +104,9 @@ class LoginUpdateTest {
 
     @Test
     fun `when request failed with network error, then error must be displayed `() {
-        val error = "Request failed, please try again!"
         spec
             .given(model)
-            .whenEvent(RequestFailedWithNetworkError(error))
+            .whenEvent(RequestFailedWithNetworkError)
             .then(
                 assertThatNext(
                     hasModel(model.requestFailed())
@@ -120,7 +118,7 @@ class LoginUpdateTest {
     fun `when login succeeded, then save the user`(){
         spec
             .given(model)
-            .whenEvent(LoginSucceeded())
+            .whenEvent(LoginSucceeded)
             .then(
                 assertThatNext(
                     hasNoModel(),
@@ -133,7 +131,7 @@ class LoginUpdateTest {
     fun `when user saved, then go to home screen`(){ // not sure why do we need to test this flow
         spec
             .given(model)
-            .whenEvent(UserSaved())
+            .whenEvent(UserSaved)
             .then(
                 assertThatNext(
                     hasNoModel(),

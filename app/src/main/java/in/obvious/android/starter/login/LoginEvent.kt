@@ -12,10 +12,10 @@ data class ValidationFailed(val errors: Set<InputValidationError>) : LoginEvent(
 
 object ValidationSucceeded : LoginEvent()
 
-data class IncorrectCredentialsEntered(val error: String) : LoginEvent()
+object IncorrectCredentialsEntered : LoginEvent()
 
-data class RequestFailedWithNetworkError(val error: String) : LoginEvent()
+object RequestFailedWithNetworkError: LoginEvent()
 
-class LoginSucceeded : LoginEvent()
+object LoginSucceeded : LoginEvent()
 
-class UserSaved : LoginEvent()
+object UserSaved : LoginEvent()
