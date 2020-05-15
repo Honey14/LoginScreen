@@ -14,8 +14,8 @@ import java.io.IOException
 
 class LoginEffectHandler(
     private val loginApiService: LoginApiService,
-    private val userDao: UserDao? = null,
-    private val uiActions: UiActions? = null
+    private val userDao: UserDao,
+    private val uiActions: UiActions
 ) : Connectable<LoginEffect, LoginEvent> {
     override fun connect(
         events: Consumer<LoginEvent>
@@ -27,7 +27,7 @@ class LoginEffectHandler(
                     is ValidateInput -> validateInput(effect, events)
                     is LogIn -> loginAPI(effect, events)
                     is SaveUser -> saveUsername(effect, events)
-                    is GoHome -> uiActions?.navigateToHomeScreen()
+                    is GoHome -> uiActions.navigateToHomeScreen()
                 }
             }
 
@@ -40,7 +40,7 @@ class LoginEffectHandler(
     private fun saveUsername(effect: SaveUser, events: Consumer<LoginEvent>) {
         val username = effect.username
 
-        userDao?.insertUser(SavingUser(0, username = username, authToken = effect.authToken))
+        userDao.insertUser(SavingUser(0, username = username, authToken = effect.authToken))
 
         events.accept(UserSaved)
     }
