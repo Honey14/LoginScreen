@@ -46,7 +46,3 @@ interface UserDao {
     @Insert
     fun insertUser(user: SavingUser)
 }
-
-interface UserDaoFake {
-    fun insertUser(user: SavingUser)
-}
