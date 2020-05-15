@@ -1,5 +1,6 @@
 package `in`.obvious.android.starter.login
 
+import `in`.obvious.android.starter.R
 import `in`.obvious.android.starter.login.database.LocalUserDao
 import `in`.obvious.android.starter.login.http.LocalLoginApi
 import android.os.Bundle
@@ -32,9 +33,17 @@ class LoginScreen : Fragment(), UiActions {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState).also {
+
+        return createView(inflater, container).also {
             controller.connect(::connectEvents)
         }
+    }
+
+    private fun createView(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): View {
+        return inflater.inflate(R.layout.screen_login, container, false)
     }
 
     private fun connectEvents(events: Consumer<LoginEvent>): Connection<LoginModel> {
