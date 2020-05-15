@@ -2,16 +2,18 @@ package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.login.InputValidationError.PasswordBlank
 import `in`.obvious.android.starter.login.InputValidationError.UsernameBlank
+import `in`.obvious.android.starter.login.http.HttpException
 import `in`.obvious.android.starter.login.http.LoginApiService
 import com.spotify.mobius.Connectable
 import com.spotify.mobius.Connection
 import com.spotify.mobius.functions.Consumer
+import java.io.IOException
 
 
 class LoginEffectHandler(
     private val loginApiService: LoginApiService
-) : Connectable<LoginEffect, LoginEvent> {
 
+) : Connectable<LoginEffect, LoginEvent> {
     override fun connect(
         events: Consumer<LoginEvent>
     ): Connection<LoginEffect> {
@@ -21,7 +23,7 @@ class LoginEffectHandler(
                 when (effect) {
                     is ValidateInput -> validateInput(effect, events)
                     is LogIn -> loginAPI(effect, events)
-                    is SaveUser -> saveUsername(effect, events)
+//                    is SaveUser -> saveUsername(effect, events)
                 }
             }
 
@@ -31,30 +33,25 @@ class LoginEffectHandler(
         }
     }
 
-    private fun saveUsername(effect: SaveUser, events: Consumer<LoginEvent>) {
+//    private fun saveUsername(effect: SaveUser, events: Consumer<LoginEvent>) {
+
 //        val username = effect.username
-//        SaveUserDb.getDatabase(application).userDao().insertUser(SavingUser(username))
 
+//        userDaoFake.insertUser(SavingUser(0,username = username, authToken = effect.authToken))
 
-    }
+//    }
 
     private fun loginAPI(effect: LogIn, events: Consumer<LoginEvent>) {
         val username = effect.username
         val password = effect.password
-
-        val loginResult = loginApiService.login(username, password)
-
-        val loginEvent = when {
-            loginResult.authToken.isNotEmpty() -> {
-                LoginSucceeded
-            }
-            else -> {
-                RequestFailedWithNetworkError // ERROR: not sure how the HTTPException class could have a condition here
-                IncorrectCredentialsEntered
-            }
+        try {
+            loginApiService.login(username, password)
+            events.accept(LoginSucceeded)
+        } catch (ex: HttpException) {
+            events.accept(IncorrectCredentialsEntered)
+        } catch (e: IOException) {
+            events.accept(RequestFailedWithNetworkError)
         }
-
-        events.accept(loginEvent)
     }
 
     private fun validateInput(
