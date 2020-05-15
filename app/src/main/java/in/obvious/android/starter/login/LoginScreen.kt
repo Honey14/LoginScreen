@@ -13,6 +13,7 @@ import com.spotify.mobius.Mobius
 import com.spotify.mobius.MobiusLoop
 import com.spotify.mobius.android.MobiusAndroid
 import com.spotify.mobius.functions.Consumer
+import kotlinx.android.synthetic.main.screen_login.*
 
 class LoginScreen : Fragment(), UiActions {
 
@@ -48,7 +49,7 @@ class LoginScreen : Fragment(), UiActions {
 
     private fun connectEvents(events: Consumer<LoginEvent>): Connection<LoginModel> {
         // Set up event listeners
-//        submitButton.setOnClickListener { events.accept(SubmitClicked()) }
+        submitButton.setOnClickListener { events.accept(SubmitClicked()) }
 
         return object : Connection<LoginModel> {
 
@@ -58,7 +59,7 @@ class LoginScreen : Fragment(), UiActions {
 
             override fun dispose() {
                 // Clear event listeners
-                // submitButton.setOnClickListenrs(null)
+                submitButton.setOnClickListener(null)
             }
         }
     }
@@ -80,10 +81,6 @@ class LoginScreen : Fragment(), UiActions {
     override fun onDestroyView() {
         controller.disconnect()
         super.onDestroyView()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     override fun navigateToHomeScreen() {
