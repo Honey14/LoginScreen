@@ -38,6 +38,7 @@ class LoginScreen : Fragment(), UiActions {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.screen_login, container, false)
         controller.connect { events ->
             connectEvents(view, events)
@@ -126,5 +127,9 @@ class LoginScreen : Fragment(), UiActions {
 
     override fun navigateToHomeScreen() {
         // Do navigation here
+        activity!!.supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment, HomeScreen())
+            .commit()
     }
 }
