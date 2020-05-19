@@ -47,7 +47,7 @@ class LoginScreen : Fragment(), UiActions {
 
     private fun connectEvents(view: View, events: Consumer<LoginEvent>): Connection<LoginModel> {
         // Set up event listeners
-        usernameTextField.addTextChangedListener(object : TextWatcher {
+        view.usernameTextField.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable?) {
                 events.accept(UsernameChanged(s.toString()))
@@ -60,10 +60,21 @@ class LoginScreen : Fragment(), UiActions {
             }
         })
 
-        view.submitButton.setOnClickListener {
-            events.accept(PasswordChanged(passwordTextField.text.toString()))
-            events.accept(SubmitClicked())
+        view.passwordTextField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                events.accept(PasswordChanged(s.toString()))
+            }
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+        })
+
+        view.submitButton.setOnClickListener {
+            events.accept(SubmitClicked())
         }
 
         return object : Connection<LoginModel> {
@@ -75,14 +86,16 @@ class LoginScreen : Fragment(), UiActions {
 
             override fun dispose() {
                 // Clear event listeners
-//                submitButton.setOnClickListener(null)
+                view.submitButton.setOnClickListener(null)
+                view.usernameTextField.addTextChangedListener(null)
+                view.passwordTextField.addTextChangedListener(null)
+
             }
         }
     }
 
     private fun render(model: LoginModel) {
         // Render UI
-//        text_user.text = model.username
         if (UsernameBlank in model.validationErrors) {
             usernameTextField.error = "Username cannot be blank!"
         } else {
@@ -90,9 +103,9 @@ class LoginScreen : Fragment(), UiActions {
         }
 
         if (PasswordBlank in model.validationErrors) {
-
+            passwordTextField.error = "Password cannot be blank"
         } else {
-
+            passwordTextField.error = null
         }
     }
 
