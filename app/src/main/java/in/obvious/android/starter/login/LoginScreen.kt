@@ -1,6 +1,7 @@
 package `in`.obvious.android.starter.login
 
 import `in`.obvious.android.starter.R
+import `in`.obvious.android.starter.login.InputValidationError.*
 import `in`.obvious.android.starter.login.database.LocalUserDao
 import `in`.obvious.android.starter.login.http.LocalLoginApi
 import android.os.Bundle
@@ -82,6 +83,17 @@ class LoginScreen : Fragment(), UiActions {
     private fun render(model: LoginModel) {
         // Render UI
 //        text_user.text = model.username
+        if (UsernameBlank in model.validationErrors) {
+            usernameTextField.error = "Username cannot be blank!"
+        } else {
+            usernameTextField.error = null
+        }
+
+        if (PasswordBlank in model.validationErrors) {
+
+        } else {
+
+        }
     }
 
     override fun onResume() {
