@@ -4,6 +4,8 @@ import `in`.obvious.android.starter.R
 import `in`.obvious.android.starter.login.database.LocalUserDao
 import `in`.obvious.android.starter.login.http.LocalLoginApi
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,8 +46,20 @@ class LoginScreen : Fragment(), UiActions {
 
     private fun connectEvents(view: View, events: Consumer<LoginEvent>): Connection<LoginModel> {
         // Set up event listeners
+        usernameTextField.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable?) {
+                events.accept(UsernameChanged(s.toString()))
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
         view.submitButton.setOnClickListener {
-            events.accept(UsernameChanged(usernameTextField.text.toString()))
             events.accept(PasswordChanged(passwordTextField.text.toString()))
             events.accept(SubmitClicked())
 
