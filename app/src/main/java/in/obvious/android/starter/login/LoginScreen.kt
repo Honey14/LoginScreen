@@ -14,6 +14,7 @@ import com.spotify.mobius.MobiusLoop
 import com.spotify.mobius.android.MobiusAndroid
 import com.spotify.mobius.functions.Consumer
 import kotlinx.android.synthetic.main.screen_login.*
+import kotlinx.android.synthetic.main.screen_login.view.*
 
 class LoginScreen : Fragment(), UiActions {
 
@@ -34,38 +35,39 @@ class LoginScreen : Fragment(), UiActions {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        return createView(inflater, container).also {
-            controller.connect(::connectEvents)
+        val view = inflater.inflate(R.layout.screen_login, container, false)
+        controller.connect { events ->
+            connectEvents(view, events)
         }
+        return view
     }
 
-    private fun createView(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): View {
-        return inflater.inflate(R.layout.screen_login, container, false)
-    }
-
-    private fun connectEvents(events: Consumer<LoginEvent>): Connection<LoginModel> {
+    private fun connectEvents(view: View, events: Consumer<LoginEvent>): Connection<LoginModel> {
         // Set up event listeners
-        submitButton.setOnClickListener { events.accept(SubmitClicked()) }
+        view.submitButton.setOnClickListener {
+            events.accept(UsernameChanged(usernameTextField.text.toString()))
+            events.accept(PasswordChanged(passwordTextField.text.toString()))
+            events.accept(SubmitClicked())
+
+        }
 
         return object : Connection<LoginModel> {
 
             override fun accept(model: LoginModel) {
                 render(model)
+                view.text_user.text = model.username
             }
 
             override fun dispose() {
                 // Clear event listeners
-                submitButton.setOnClickListener(null)
+//                submitButton.setOnClickListener(null)
             }
         }
     }
 
     private fun render(model: LoginModel) {
         // Render UI
+//        text_user.text = model.username
     }
 
     override fun onResume() {
