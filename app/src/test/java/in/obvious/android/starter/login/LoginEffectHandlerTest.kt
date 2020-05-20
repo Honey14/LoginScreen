@@ -132,7 +132,7 @@ class LoginEffectHandlerTest {
 //        val service = FakeLoginApiService(httpException = HttpException(400, "Bad Request"))
 
         val service = mock<LoginApiService>()
-        whenever(service.login(username = username, password = password))
+        whenever(service.login(username = eq(username), password = eq(password)))
             .thenThrow(HttpException(400, "Bad Request"))
 
         setupConnection(apiService = service)
@@ -149,7 +149,14 @@ class LoginEffectHandlerTest {
     fun `when the login effect is received, emit the validation successful event if the login call succeeds`() {
         // given
         val authToken = "546tyt74584yty95649yht"
-        val service = FakeLoginApiService(response = LoginResponse(authToken))
+        val username = "vinay"
+        val password = "123"
+        val service = mock<LoginApiService>()
+        whenever(service.login(eq(username), eq(password)))
+            .thenReturn(LoginResponse(authToken))
+
+//        val service = FakeLoginApiService(response = LoginResponse(authToken))
+
         setupConnection(apiService = service)
 
         // when
