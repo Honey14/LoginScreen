@@ -8,9 +8,7 @@ import `in`.obvious.android.starter.login.http.FakeLoginApiService
 import `in`.obvious.android.starter.login.http.HttpException
 import `in`.obvious.android.starter.login.http.LoginApiService
 import `in`.obvious.android.starter.login.http.LoginResponse
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.spotify.mobius.Connection
 import com.spotify.mobius.test.RecordingConsumer
 import org.junit.After
@@ -157,29 +155,30 @@ class LoginEffectHandlerTest {
 
     @Test
     fun `when the Save User effect is received, save the user in database`() {
-        setupConnection()
+        val dao = mock<UserDao>()
+        setupConnection(userDao = dao)
 
         //when
-        val effect = SaveUser(username = "vinay", authToken = "ty67ty65756y")
+        val username = "vinay"
+        val authToken = "ty67ty65756y"
+        val effect = SaveUser(username = username, authToken = authToken)
         connection.accept(effect)
 
         //then
+        verify(dao).insertUser(SavingUser(0, username, authToken))
+        verifyNoMoreInteractions(dao)
         receivedEvents.assertValues(UserSaved)
     }
 
     private fun setupConnection(
         apiService: LoginApiService = FakeLoginApiService(),
-        userDao: UserDao = FakeUserDao(),
+        userDao: UserDao = mock(),
         uiActions: UiActions = FakeUiActions()
     ) {
         val effectHandler = LoginEffectHandler(apiService, userDao, uiActions)
 
         connection = effectHandler.connect(receivedEvents)
     }
-}
-
-class FakeUserDao : UserDao {
-    override fun insertUser(user: SavingUser) {}
 }
 
 class FakeUiActions : UiActions {
