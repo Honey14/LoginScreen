@@ -127,11 +127,18 @@ class LoginEffectHandlerTest {
     @Test
     fun `when the login effect is received, emit the incorrect credentials event if the login call fails`() {
         // given
-        val service = FakeLoginApiService(httpException = HttpException(400, "Bad Request"))
+        val username = "vinay"
+        val password = "123"
+//        val service = FakeLoginApiService(httpException = HttpException(400, "Bad Request"))
+
+        val service = mock<LoginApiService>()
+        whenever(service.login(username = username, password = password))
+            .thenThrow(HttpException(400, "Bad Request"))
+
         setupConnection(apiService = service)
 
         // when
-        val effect = LogIn(username = "vinay", password = "123")
+        val effect = LogIn(username = username, password = password)
         connection.accept(effect)
 
         // then

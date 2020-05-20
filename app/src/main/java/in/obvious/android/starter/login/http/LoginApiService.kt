@@ -4,7 +4,7 @@ import java.io.IOException
 
 interface LoginApiService {
 
-    @Throws(IOException::class)
+    @Throws(IOException::class, HttpException::class)
     fun login(
         username: String,
         password: String
