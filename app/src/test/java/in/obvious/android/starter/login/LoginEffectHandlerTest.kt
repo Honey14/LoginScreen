@@ -8,6 +8,9 @@ import `in`.obvious.android.starter.login.http.FakeLoginApiService
 import `in`.obvious.android.starter.login.http.HttpException
 import `in`.obvious.android.starter.login.http.LoginApiService
 import `in`.obvious.android.starter.login.http.LoginResponse
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.spotify.mobius.Connection
 import com.spotify.mobius.test.RecordingConsumer
 import org.junit.After
@@ -105,11 +108,18 @@ class LoginEffectHandlerTest {
     @Test
     fun `when the login effect is received, emit the network failed event if the login call fails`() {
         // given
-        val service = FakeLoginApiService(otherException = SocketTimeoutException())
+//        val service = FakeLoginApiService(otherException = SocketTimeoutException())
+        val username = "vinay"
+        val password = "123"
+
+        val service = mock<LoginApiService>()
+        whenever(service.login(username = eq(username), password = eq(password)))
+            .thenThrow(SocketTimeoutException())
+
         setupConnection(apiService = service)
 
         // when
-        val effect = LogIn(username = "vinay", password = "123")
+        val effect = LogIn(username = username, password = password)
         connection.accept(effect)
 
         // then
@@ -133,7 +143,8 @@ class LoginEffectHandlerTest {
     @Test
     fun `when the login effect is received, emit the validation successful event if the login call succeeds`() {
         // given
-        val service = FakeLoginApiService(response = LoginResponse("546tyt74584yty95649yht"))
+        val authToken = "546tyt74584yty95649yht"
+        val service = FakeLoginApiService(response = LoginResponse(authToken))
         setupConnection(apiService = service)
 
         // when
@@ -141,7 +152,7 @@ class LoginEffectHandlerTest {
         connection.accept(effect)
 
         // then
-        receivedEvents.assertValues(LoginSucceeded as LoginEvent)
+        receivedEvents.assertValues(LoginSucceeded(authToken) as LoginEvent)
     }
 
     @Test

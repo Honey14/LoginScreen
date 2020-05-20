@@ -49,8 +49,8 @@ class LoginEffectHandler(
         val username = effect.username
         val password = effect.password
         try {
-            loginApiService.login(username, password)
-            events.accept(LoginSucceeded)
+            val response = loginApiService.login(username, password)
+            events.accept(LoginSucceeded(response.authToken))
         } catch (ex: HttpException) {
             events.accept(IncorrectCredentialsEntered)
         } catch (e: IOException) {

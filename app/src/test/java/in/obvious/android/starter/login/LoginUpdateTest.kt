@@ -116,13 +116,14 @@ class LoginUpdateTest {
 
     @Test
     fun `when login succeeded, then save the user`(){
+        val authToken = "65yt65yt56"
         spec
             .given(model)
-            .whenEvent(LoginSucceeded)
+            .whenEvent(LoginSucceeded(authToken))
             .then(
                 assertThatNext(
                     hasNoModel(),
-                    hasEffects(SaveUser("honey","65yt65yt56") as LoginEffect)
+                    hasEffects(SaveUser("honey", authToken) as LoginEffect)
                 )
             )
     }

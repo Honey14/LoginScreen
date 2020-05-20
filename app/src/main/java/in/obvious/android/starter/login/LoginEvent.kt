@@ -16,6 +16,6 @@ object IncorrectCredentialsEntered : LoginEvent()
 
 object RequestFailedWithNetworkError: LoginEvent()
 
-object LoginSucceeded : LoginEvent()
+data class LoginSucceeded(val authToken: String) : LoginEvent()
 
 object UserSaved : LoginEvent()
